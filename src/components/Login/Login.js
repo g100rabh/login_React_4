@@ -16,10 +16,10 @@ const emailReducer = (state, action) => {
 
 const passwordReducer = (state, action) => {
   if (action.type === 'USER_P_INPUT') {
-    return {value: action.val, isValid: action.val.length > 6 }
+    return {value: action.val, isValid: action.val.trim().length > 6 }
   }
   if (action.type === 'INPUT_P_BLUR') {
-    return {value: state.value, isValid: state.value.length > 6 }
+    return {value: state.value, isValid: state.value.trim().length > 6 }
   }
   return { value: '', isValid: false}
 }; 
@@ -27,8 +27,8 @@ const passwordReducer = (state, action) => {
 const Login = (props) => {
   // const [enteredEmail, setEnteredEmail] = useState('');
   // const [emailIsValid, setEmailIsValid] = useState();
-  const [enteredPassword, setEnteredPassword] = useState('');
-  const [passwordIsValid, setPasswordIsValid] = useState();
+  // const [enteredPassword, setEnteredPassword] = useState('');
+  // const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
   const [enteredCollege, setEnteredCollege] = useState('')
   const [collegeIsValid, setCollegeIsValid] = useState();
@@ -43,18 +43,18 @@ const Login = (props) => {
     isValid: null,
   });
 
-  // useEffect( () => {
-  //   const identifier = setTimeout( () => {
-  //     console.log('sss')
-  //     setFormIsValid(
-  //       emailState.value.includes('@') && enteredPassword.trim().length > 6 && enteredCollege.trim().length > 0
-  //     );
-  //   }, 500);
-  //   return () => {
-  //     console.log('Clean Up')
-  //     clearTimeout(identifier)
-  //   };
-  // }, [emailState, enteredPassword, enteredCollege])
+  useEffect( () => {
+    const identifier = setTimeout( () => {
+      console.log('sss')
+      setFormIsValid(
+        emailState.isValid && passwordState.isValid && enteredCollege.trim().length > 0
+      );
+    }, 500);
+    return () => {
+      console.log('Clean Up')
+      clearTimeout(identifier)
+    };
+  }, [emailState, passwordState, enteredCollege])
 
 
   const emailChangeHandler = (event) => {
@@ -95,7 +95,7 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(emailState.value, enteredPassword);
+    props.onLogin(emailState.value, passwordState, enteredCollege);
   };
 
   return (
